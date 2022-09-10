@@ -22,7 +22,7 @@ def scrape():
     marsTable = mongo.db.marsData
     
     # drop the table if exists
-    mongo.db.marsData.drop()
+    #mongo.db.marsData.drop()
     
     #test to call scrape mars script
     mars_data = scrape_mars.scrape_all()
@@ -30,7 +30,7 @@ def scrape():
     marsTable.update_one({}, {"$set": mars_data}, upsert=True)
     
     # take the dictionary and load it into mongoDB
-    marsTable.insert_one(mars_data)
+    #marsTable.insert_one(mars_data)
     
     #print(mars_data) # print the dictionary that is returned from the scrape all script
     return mars_data #redirect('/', code=302) #mars_data

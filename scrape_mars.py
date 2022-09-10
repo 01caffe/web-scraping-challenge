@@ -71,13 +71,17 @@ def scrape_feature_img(browser):
     # Parse the resulting html with soup
     html = browser.html
     img_soup = soup(html, 'html.parser')
+    try:
     
     # Find the relative image url
-    img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
+        img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
     
+    except AttributeError:
+        return None
+
     # Use the base url to create an absolute url
     img_url = f'https://spaceimages-mars.com/{img_url_rel}'
-    
+    print(img_url)
     #return the img url
     return img_url
 
@@ -109,7 +113,7 @@ def scrape_facts_page(browser):
 def scrape_hemispheres(browser):
     #URL
     url = 'https://marshemispheres.com/'
-    browser.visit(url)
+    browser.visit(url +"index.html")
     
 # Create a list to hold the images and titles.
     hemisphere_image_urls = []
@@ -136,8 +140,8 @@ def scrape_hemispheres(browser):
         # Navigate Backwards
         browser.back()
         
-        # return the hemi with titles
-        return hemisphere_image_urls
+    # return the hemi with titles
+    return hemisphere_image_urls
 
     
     

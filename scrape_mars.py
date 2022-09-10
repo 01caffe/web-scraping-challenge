@@ -1,7 +1,7 @@
 # Import Splinter, BeautifulSoup, and Pandas
 from splinter import Browser
 from bs4 import BeautifulSoup as soup
-#import pandas as pd
+import datetime as dt
 from webdriver_manager.chrome import ChromeDriverManager
 
 # scrape the function
@@ -17,7 +17,9 @@ def scrape_all():
         "newsTitle": news_title,
         "newsParagraph": news_paragraph,
         "featuredImage": scrape_feature_img(browser),
-        "facts": scrape_facts_page(browser)
+        "facts": scrape_facts_page(browser),
+        "hemisphere": scrape_hemispheres(browser),
+        "lastUpdated": dt.datetime.now
     }
     
     # stop web driver
@@ -104,35 +106,38 @@ def scrape_facts_page(browser):
 
 
 # scrape the Mars Hemisphere
-def hemispheres(browser):
+def scrape_hemispheres(browser):
     #URL
     url = 'https://marshemispheres.com/'
     browser.visit(url)
     
 # Create a list to hold the images and titles.
-hemisphere_image_urls = []
+    hemisphere_image_urls = []
 
-# set up the loop
-for item in range(4):
-    # Browse through each article
-    #HEMI info DICT
-    hemisphere = {}
+    # set up the loop
+    for item in range(4):
+        # Browse through each article
+        #HEMI info DICT
+        hemisphere = {}
+            
+        # Find Element on Each Loop to Avoid a Stale Element Exception
+        browser.find_by_css('a.product-item img')[item].click()
+            
+        # Find Sample Image Anchor Tag & Extract <href>
+        sample_element = browser.links.find_by_text('Sample').first
+        hemisphere["img_url"] = sample_element['href']
+            
+        # Get Hemisphere Title
+        hemisphere['title'] = browser.find_by_css('h2.title').text
+            
+        # Append Hemisphere Object to List
+        hemisphere_image_urls.append(hemisphere)
+            
+        # Navigate Backwards
+        browser.back()
         
-    # Find Element on Each Loop to Avoid a Stale Element Exception
-    browser.find_by_css('a.product-item img')[item].click()
-        
-    # Find Sample Image Anchor Tag & Extract <href>
-    sample_element = browser.links.find_by_text('Sample').first
-    hemisphere["img_url"] = sample_element['href']
-        
-    # Get Hemisphere Title
-    hemisphere['title'] = browser.find_by_css('h2.title').text
-        
-    # Append Hemisphere Object to List
-    hemisphere_image_urls.append(hemisphere)
-        
-    # Navigate Backwards
-    browser.back()
+        # return the hemi with titles
+        return hemisphere_image_urls
 
     
     
